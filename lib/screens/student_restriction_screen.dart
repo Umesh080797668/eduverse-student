@@ -123,7 +123,7 @@ class _StudentRestrictionScreenState extends State<StudentRestrictionScreen> wit
                   
                   // Title
                   Text(
-                    'Account Restricted',
+                    'Access Restricted',
                     style: TextStyle(
                       fontSize: 28,
                       fontWeight: FontWeight.bold,
@@ -135,7 +135,7 @@ class _StudentRestrictionScreenState extends State<StudentRestrictionScreen> wit
                   
                   // Message
                   Text(
-                    'Your account has been temporarily restricted.',
+                    'Your access has been temporarily restricted by your teacher.',
                     style: TextStyle(
                       fontSize: 16,
                       color: Colors.red.shade700,

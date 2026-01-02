@@ -8,7 +8,7 @@ class RestrictionService {
   Future<Map<String, dynamic>> checkStudentRestrictionStatus(String studentId) async {
     try {
       final response = await http.get(
-        Uri.parse('$baseUrl/student/restriction-status/$studentId'),
+        Uri.parse('$baseUrl/api/student/restriction-status/$studentId'),
         headers: {'Content-Type': 'application/json'},
       );
 
