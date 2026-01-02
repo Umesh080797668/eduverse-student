@@ -6,7 +6,7 @@ import '../services/api_service.dart';
 class AttendanceProvider with ChangeNotifier {
   List<Attendance> _attendance = [];
   bool _isLoading = false;
-  Map<String, List<Attendance>> _attendanceByClass = {};
+  final Map<String, List<Attendance>> _attendanceByClass = {};
   Timer? _pollingTimer;
   String? _currentStudentId;
   int? _currentYear;

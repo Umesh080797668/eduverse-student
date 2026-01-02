@@ -6,7 +6,7 @@ import '../services/api_service.dart';
 class PaymentProvider with ChangeNotifier {
   List<Payment> _payments = [];
   bool _isLoading = false;
-  Map<String, List<Payment>> _paymentsByClass = {};
+  final Map<String, List<Payment>> _paymentsByClass = {};
   Timer? _pollingTimer;
   String? _currentStudentId;
   int? _currentYear;

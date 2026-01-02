@@ -56,7 +56,7 @@ class ApiService {
     dynamic body,
     Map<String, dynamic>? queryParams,
   }) async {
-    final uri = Uri.parse('${baseUrl}$endpoint').replace(queryParameters: queryParams);
+    final uri = Uri.parse('$baseUrl$endpoint').replace(queryParameters: queryParams);
 
     final requestHeaders = {
       'Content-Type': 'application/json',
@@ -253,6 +253,7 @@ class ApiService {
           'appVersion': appVersion,
           'device': device,
           'studentId': studentId,
+          'userType': 'student',
         },
       );
 
@@ -264,6 +265,41 @@ class ApiService {
     } catch (e) {
       if (e is ApiException) rethrow;
       throw ApiException('Failed to submit problem report: ${e.toString()}');
+    }
+  }
+
+  // Submit feature request
+  static Future<Map<String, dynamic>> submitFeatureRequest({
+    required String userEmail,
+    required String featureDescription,
+    required double bidPrice,
+    String? appVersion,
+    String? device,
+    String? studentId,
+  }) async {
+    try {
+      final response = await _makeRequest(
+        'POST',
+        '/api/reports/feature-request',
+        body: {
+          'userEmail': userEmail,
+          'featureDescription': featureDescription,
+          'bidPrice': bidPrice,
+          'appVersion': appVersion,
+          'device': device,
+          'studentId': studentId,
+          'userType': 'student',
+        },
+      );
+
+      if (response.statusCode != 201) {
+        throw ApiException('Failed to submit feature request', statusCode: response.statusCode);
+      }
+
+      return json.decode(response.body);
+    } catch (e) {
+      if (e is ApiException) rethrow;
+      throw ApiException('Failed to submit feature request: ${e.toString()}');
     }
   }
 

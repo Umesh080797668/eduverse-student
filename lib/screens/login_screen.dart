@@ -120,7 +120,7 @@ class _LoginScreenState extends State<LoginScreen> with SingleTickerProviderStat
                             Container(
                               width: 80,
                               height: 80,
-                              decoration: BoxDecoration(
+                              decoration: const BoxDecoration(
                                 color: Colors.teal,
                                 shape: BoxShape.circle,
                               ),

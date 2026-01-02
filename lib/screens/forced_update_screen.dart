@@ -181,7 +181,7 @@ class _ForcedUpdateScreenState extends State<ForcedUpdateScreen> {
                             const SizedBox(height: 16),
                             LinearProgressIndicator(
                               value: _downloadProgress,
-                              backgroundColor: Theme.of(context).colorScheme.surfaceVariant,
+                              backgroundColor: Theme.of(context).colorScheme.surfaceContainerHighest,
                               valueColor: AlwaysStoppedAnimation<Color>(
                                 Theme.of(context).colorScheme.primary,
                               ),

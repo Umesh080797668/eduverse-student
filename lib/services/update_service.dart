@@ -215,7 +215,7 @@ class UpdateService {
           } else {
             debugPrint('Download progress: $received bytes (total unknown)');
             if (onProgress != null && received > 0) {
-              final fakeProgress = 0.5;
+              const fakeProgress = 0.5;
               onProgress(fakeProgress);
             }
           }
