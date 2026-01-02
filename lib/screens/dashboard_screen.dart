@@ -7,6 +7,7 @@ import 'profile_screen.dart';
 import '../providers/auth_provider.dart';
 import '../providers/attendance_provider.dart';
 import '../providers/payment_provider.dart';
+import '../services/restriction_polling_service.dart';
 import '../models/attendance.dart';
 import '../models/payment.dart';
 
@@ -28,6 +29,15 @@ class _DashboardScreenState extends State<DashboardScreen> with SingleTickerProv
     WidgetsBinding.instance.addObserver(this);
     WidgetsBinding.instance.addPostFrameCallback((_) {
       _loadData();
+      
+      // Start restriction polling
+      final authProvider = Provider.of<AuthProvider>(context, listen: false);
+      if (authProvider.currentUser?.studentId != null) {
+        RestrictionPollingService().startPolling(
+          context: context,
+          studentId: authProvider.currentUser!.studentId!,
+        );
+      }
     });
   }
 
@@ -36,6 +46,10 @@ class _DashboardScreenState extends State<DashboardScreen> with SingleTickerProv
     WidgetsBinding.instance.removeObserver(this);
     _tabController.dispose();
     _stopPolling();
+    
+    // Stop restriction polling
+    RestrictionPollingService().stopPolling();
+    
     super.dispose();
   }
 
