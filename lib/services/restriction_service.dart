@@ -2,7 +2,7 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 
 class RestrictionService {
-  final String baseUrl = 'http://192.168.43.170:3004/api'; // Update with your API URL
+  final String baseUrl = 'https://teacher-eight-chi.vercel.app'; // Update with your API URL
 
   /// Check if student is restricted
   Future<Map<String, dynamic>> checkStudentRestrictionStatus(String studentId) async {
