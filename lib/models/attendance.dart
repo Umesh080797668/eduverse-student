@@ -29,15 +29,31 @@ class Attendance {
     if (json['studentId'] is String) {
       extractedStudentId = json['studentId'];
     } else if (json['studentId'] is Map) {
-      extractedStudentId = json['studentId']['_id'] ?? json['studentId']['studentId'];
+      extractedStudentId =
+          json['studentId']['_id'] ?? json['studentId']['studentId'];
     }
-    
+
     // Extract className from various possible locations
     String? extractedClassName = json['className'];
-    if (extractedClassName == null && json['classId'] is Map) {
-      extractedClassName = json['classId']['name'] ?? json['classId']['className'];
+
+    // Try to extract from classId object
+    if ((extractedClassName == null || extractedClassName.isEmpty) &&
+        json['classId'] is Map) {
+      extractedClassName = json['classId']['name'] ??
+          json['classId']['className'] ??
+          json['classId']['class'] ??
+          json['classId']['_name'];
     }
-    
+
+    // Additional fallback for nested class info
+    if ((extractedClassName == null || extractedClassName.isEmpty) &&
+        json['classId'] is Map) {
+      if (json['classId']['classData'] is Map) {
+        extractedClassName = json['classId']['classData']['name'] ??
+            json['classId']['classData']['className'];
+      }
+    }
+
     // Extract classId
     String? extractedClassId;
     if (json['classId'] is String) {
@@ -45,18 +61,19 @@ class Attendance {
     } else if (json['classId'] is Map) {
       extractedClassId = json['classId']['_id'] ?? json['classId']['id'];
     }
-    
+
     return Attendance(
       id: json['_id'] ?? json['id'],
       studentId: extractedStudentId ?? 'Unknown',
       classId: extractedClassId,
-      className: extractedClassName ?? 'Unknown Class',
+      className: extractedClassName ?? 'Class Info Unavailable',
       date: DateTime.parse(json['date']),
       session: json['session'],
       status: json['status'],
       month: json['month'],
       year: json['year'],
-      createdAt: json['createdAt'] != null ? DateTime.parse(json['createdAt']) : null,
+      createdAt:
+          json['createdAt'] != null ? DateTime.parse(json['createdAt']) : null,
     );
   }
 

@@ -180,11 +180,32 @@ class _ProfileScreenState extends State<ProfileScreen> {
                             if (_isEditing)
                               TextFormField(
                                 controller: _nameController,
+                                style: TextStyle(
+                                  color: Theme.of(context).colorScheme.onSurface,
+                                ),
                                 decoration: InputDecoration(
                                   labelText: 'Name',
+                                  labelStyle: TextStyle(
+                                    color: Theme.of(context).colorScheme.onSurfaceVariant,
+                                  ),
                                   border: OutlineInputBorder(
                                     borderRadius: BorderRadius.circular(8),
                                   ),
+                                  enabledBorder: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(8),
+                                    borderSide: BorderSide(
+                                      color: Theme.of(context).colorScheme.outline,
+                                    ),
+                                  ),
+                                  focusedBorder: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(8),
+                                    borderSide: BorderSide(
+                                      color: Theme.of(context).colorScheme.primary,
+                                      width: 2,
+                                    ),
+                                  ),
+                                  filled: true,
+                                  fillColor: Theme.of(context).colorScheme.surfaceContainerHighest,
                                 ),
                                 validator: (value) {
                                   if (value?.isEmpty ?? true) {
@@ -202,11 +223,32 @@ class _ProfileScreenState extends State<ProfileScreen> {
                             if (_isEditing)
                               TextFormField(
                                 controller: _emailController,
+                                style: TextStyle(
+                                  color: Theme.of(context).colorScheme.onSurface,
+                                ),
                                 decoration: InputDecoration(
                                   labelText: 'Email',
+                                  labelStyle: TextStyle(
+                                    color: Theme.of(context).colorScheme.onSurfaceVariant,
+                                  ),
                                   border: OutlineInputBorder(
                                     borderRadius: BorderRadius.circular(8),
                                   ),
+                                  enabledBorder: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(8),
+                                    borderSide: BorderSide(
+                                      color: Theme.of(context).colorScheme.outline,
+                                    ),
+                                  ),
+                                  focusedBorder: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(8),
+                                    borderSide: BorderSide(
+                                      color: Theme.of(context).colorScheme.primary,
+                                      width: 2,
+                                    ),
+                                  ),
+                                  filled: true,
+                                  fillColor: Theme.of(context).colorScheme.surfaceContainerHighest,
                                 ),
                                 validator: (value) {
                                   if (value?.isEmpty ?? true) {

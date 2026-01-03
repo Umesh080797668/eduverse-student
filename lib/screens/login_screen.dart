@@ -154,7 +154,7 @@ class _LoginScreenState extends State<LoginScreen> with SingleTickerProviderStat
                             // Student Number Field
                             TextFormField(
                               controller: _studentNumberController,
-                              style: const TextStyle(color: Colors.white),
+                              style: TextStyle(color: Theme.of(context).colorScheme.onSurface),
                               decoration: InputDecoration(
                                 labelText: 'Student Number',
                                 prefixIcon: const Icon(Icons.badge),
@@ -174,7 +174,7 @@ class _LoginScreenState extends State<LoginScreen> with SingleTickerProviderStat
                             // Email Field
                             TextFormField(
                               controller: _emailController,
-                              style: const TextStyle(color: Colors.white),
+                              style: TextStyle(color: Theme.of(context).colorScheme.onSurface),
                               decoration: InputDecoration(
                                 labelText: 'Email',
                                 prefixIcon: const Icon(Icons.email),

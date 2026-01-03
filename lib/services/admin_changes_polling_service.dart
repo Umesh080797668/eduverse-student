@@ -114,7 +114,7 @@ class AdminChangesPollingService {
         'Content-Type': 'application/json',
         'Authorization': 'Bearer $token',
       },
-    ).timeout(const Duration(seconds: 10));
+    ).timeout(const Duration(seconds: 30));
 
     if (response.statusCode == 200) {
       return json.decode(response.body) as Map<String, dynamic>;
@@ -134,7 +134,7 @@ class AdminChangesPollingService {
         'Content-Type': 'application/json',
         'Authorization': 'Bearer $token',
       },
-    ).timeout(const Duration(seconds: 10));
+    ).timeout(const Duration(seconds: 30));
 
     if (response.statusCode == 200) {
       return json.decode(response.body) as Map<String, dynamic>;
@@ -192,7 +192,7 @@ class AdminChangesPollingService {
           'Content-Type': 'application/json',
           'Authorization': 'Bearer $token',
         },
-      ).timeout(const Duration(seconds: 10));
+      ).timeout(const Duration(seconds: 30));
 
       if (response.statusCode == 200) {
         return json.decode(response.body) as Map<String, dynamic>;
@@ -213,7 +213,7 @@ class AdminChangesPollingService {
           'Content-Type': 'application/json',
           'Authorization': 'Bearer $token',
         },
-      ).timeout(const Duration(seconds: 10));
+      ).timeout(const Duration(seconds: 30));
 
       if (response.statusCode == 200) {
         return json.decode(response.body) as Map<String, dynamic>;
@@ -234,7 +234,7 @@ class AdminChangesPollingService {
           'Content-Type': 'application/json',
           'Authorization': 'Bearer $token',
         },
-      ).timeout(const Duration(seconds: 10));
+      ).timeout(const Duration(seconds: 30));
 
       if (response.statusCode == 200) {
         return json.decode(response.body) as Map<String, dynamic>;
@@ -255,7 +255,7 @@ class AdminChangesPollingService {
           'Content-Type': 'application/json',
           'Authorization': 'Bearer $token',
         },
-      ).timeout(const Duration(seconds: 10));
+      ).timeout(const Duration(seconds: 30));
 
       if (response.statusCode == 200) {
         return json.decode(response.body) as Map<String, dynamic>;
@@ -276,7 +276,7 @@ class AdminChangesPollingService {
           'Content-Type': 'application/json',
           'Authorization': 'Bearer $token',
         },
-      ).timeout(const Duration(seconds: 10));
+      ).timeout(const Duration(seconds: 30));
 
       if (response.statusCode == 200) {
         return json.decode(response.body) as Map<String, dynamic>;

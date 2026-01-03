@@ -41,7 +41,7 @@ class Payment {
       id: json['_id'] ?? json['id'],
       studentId: json['studentId'] is String ? json['studentId'] : (json['studentId'] is Map ? json['studentId']['_id'] : 'Unknown'),
       classId: extractedClassId ?? 'Unknown',
-      className: extractedClassName,
+      className: extractedClassName ?? 'Class Info Unavailable',
       amount: (json['amount'] as num).toDouble(),
       type: json['type'],
       date: date,
