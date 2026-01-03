@@ -7,6 +7,7 @@ import 'profile_screen.dart';
 import '../providers/auth_provider.dart';
 import '../providers/attendance_provider.dart';
 import '../providers/payment_provider.dart';
+import '../providers/admin_changes_provider.dart';
 import '../services/restriction_polling_service.dart';
 import '../models/attendance.dart';
 import '../models/payment.dart';
@@ -30,12 +31,15 @@ class _DashboardScreenState extends State<DashboardScreen> with SingleTickerProv
     WidgetsBinding.instance.addPostFrameCallback((_) {
       _loadData();
       
-      // Start restriction polling
+      // Start admin changes polling (covers restrictions and other admin actions)
       final authProvider = Provider.of<AuthProvider>(context, listen: false);
+      final adminChangesProvider = Provider.of<AdminChangesProvider>(context, listen: false);
       if (authProvider.currentUser?.studentId != null) {
-        RestrictionPollingService().startPolling(
+        adminChangesProvider.startPolling(
           context: context,
-          studentId: authProvider.currentUser!.studentId!,
+          userId: authProvider.currentUser!.studentId!,
+          userType: 'student',
+          pollIntervalSeconds: 5,
         );
       }
     });
@@ -47,8 +51,9 @@ class _DashboardScreenState extends State<DashboardScreen> with SingleTickerProv
     _tabController.dispose();
     _stopPolling();
     
-    // Stop restriction polling
-    RestrictionPollingService().stopPolling();
+    // Stop admin changes polling
+    final adminChangesProvider = Provider.of<AdminChangesProvider>(context, listen: false);
+    adminChangesProvider.stopPolling();
     
     super.dispose();
   }
@@ -60,16 +65,19 @@ class _DashboardScreenState extends State<DashboardScreen> with SingleTickerProv
     final authProvider = Provider.of<AuthProvider>(context, listen: false);
     final attendanceProvider = Provider.of<AttendanceProvider>(context, listen: false);
     final paymentProvider = Provider.of<PaymentProvider>(context, listen: false);
+    final adminChangesProvider = Provider.of<AdminChangesProvider>(context, listen: false);
 
     if (authProvider.currentUser?.studentId != null) {
       if (state == AppLifecycleState.resumed) {
         // App came back to foreground, restart polling
         attendanceProvider.startPolling(authProvider.currentUser!.studentId!, _selectedYear);
         paymentProvider.startPolling(authProvider.currentUser!.studentId!, _selectedYear);
+        adminChangesProvider.resumePolling();
       } else if (state == AppLifecycleState.paused || state == AppLifecycleState.inactive) {
         // App went to background, stop polling to save battery
         attendanceProvider.stopPolling();
         paymentProvider.stopPolling();
+        adminChangesProvider.pausePolling();
       }
     }
   }

@@ -3,6 +3,7 @@ import 'dart:async';
 import 'dart:io';
 import 'package:http/http.dart' as http;
 import 'package:flutter/foundation.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import '../models/attendance.dart';
 import '../models/payment.dart';
 
@@ -24,6 +25,17 @@ class ApiService {
     // Add more URLs if available for load balancing
   ];
   static int _currentUrlIndex = 0;
+
+  // Get stored authentication token
+  static Future<String?> getToken() async {
+    try {
+      const FlutterSecureStorage storage = FlutterSecureStorage();
+      return await storage.read(key: 'auth_token');
+    } catch (e) {
+      print('Error getting token: $e');
+      return null;
+    }
+  }
 
   // Helper method to extract error message from response body
   static String? _extractErrorMessage(String responseBody) {
