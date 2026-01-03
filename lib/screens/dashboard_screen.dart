@@ -40,6 +40,12 @@ class _DashboardScreenState extends State<DashboardScreen> with SingleTickerProv
           userId: authProvider.currentUser!.studentId!,
           userType: 'student',
           pollIntervalSeconds: 5,
+          onUserNotFound: () async {
+            await authProvider.logout();
+            if (mounted) {
+              Navigator.of(context).pushReplacementNamed('/login');
+            }
+          },
         );
       }
     });
