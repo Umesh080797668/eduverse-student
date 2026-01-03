@@ -158,10 +158,8 @@ class _SplashScreenState extends State<SplashScreen>
           child: SafeArea(
             child: Center(
               child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
-                  const Spacer(flex: 2),
-
                   // Animated Logo Container
                   RotationTransition(
                     turns: _rotationAnimation,
@@ -170,8 +168,8 @@ class _SplashScreenState extends State<SplashScreen>
                       child: FadeTransition(
                         opacity: _fadeAnimation,
                         child: Container(
-                          width: 160,
-                          height: 160,
+                          width: 120,
+                          height: 120,
                           decoration: BoxDecoration(
                             color: Colors.white.withOpacity(0.95),
                             shape: BoxShape.circle,
@@ -198,8 +196,8 @@ class _SplashScreenState extends State<SplashScreen>
                           child: ClipOval(
                             child: Image.asset(
                               'assets/images/Gemini_Generated_Image_imjlkgimjlkgimjl.png',
-                              width: 120,
-                              height: 120,
+                              width: 100,
+                              height: 100,
                               fit: BoxFit.cover,
                             ),
                           ),
@@ -207,8 +205,6 @@ class _SplashScreenState extends State<SplashScreen>
                       ),
                     ),
                   ),
-
-                  const SizedBox(height: 50),
 
                   // Animated Title Section
                   SlideTransition(
@@ -221,7 +217,7 @@ class _SplashScreenState extends State<SplashScreen>
                           Text(
                             'Eduverse',
                             style: GoogleFonts.poppins(
-                              fontSize: 42,
+                              fontSize: 36,
                               fontWeight: FontWeight.bold,
                               color: Colors.white,
                               letterSpacing: 1.2,
@@ -239,7 +235,7 @@ class _SplashScreenState extends State<SplashScreen>
                           Text(
                             'Student Panel',
                             style: GoogleFonts.poppins(
-                              fontSize: 24,
+                              fontSize: 20,
                               fontWeight: FontWeight.w500,
                               color: Colors.white.withOpacity(0.95),
                               letterSpacing: 0.8,
@@ -283,8 +279,6 @@ class _SplashScreenState extends State<SplashScreen>
                     ),
                   ),
 
-                  const Spacer(flex: 2),
-
                   // Enhanced Loading Section
                   FadeTransition(
                     opacity: _fadeAnimation,
@@ -292,8 +286,8 @@ class _SplashScreenState extends State<SplashScreen>
                       children: [
                         // Custom Loading Animation
                         Container(
-                          width: 60,
-                          height: 60,
+                          width: 50,
+                          height: 50,
                           decoration: BoxDecoration(
                             shape: BoxShape.circle,
                             border: Border.all(
@@ -314,7 +308,7 @@ class _SplashScreenState extends State<SplashScreen>
                             ),
                           ),
                         ),
-                        const SizedBox(height: 24),
+                        const SizedBox(height: 16),
                         Text(
                           'Initializing Eduverse...',
                           style: GoogleFonts.poppins(
@@ -336,8 +330,6 @@ class _SplashScreenState extends State<SplashScreen>
                       ],
                     ),
                   ),
-
-                  const SizedBox(height: 80),
                 ],
               ),
             ),
