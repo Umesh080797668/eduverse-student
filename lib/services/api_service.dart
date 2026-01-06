@@ -253,6 +253,7 @@ class ApiService {
     required String issueDescription,
     String? appVersion,
     String? device,
+    String? deviceName,
     String? studentId,
     List<File>? images,
   }) async {
@@ -267,6 +268,7 @@ class ApiService {
             'issueDescription': issueDescription,
             'appVersion': appVersion,
             'device': device,
+            'deviceName': deviceName,
             'studentId': studentId,
             'userType': 'student',
           },
@@ -294,6 +296,7 @@ class ApiService {
       request.fields['issueDescription'] = issueDescription;
       if (appVersion != null) request.fields['appVersion'] = appVersion;
       if (device != null) request.fields['device'] = device;
+      if (deviceName != null) request.fields['deviceName'] = deviceName;
       if (studentId != null) request.fields['studentId'] = studentId;
       request.fields['userType'] = 'student';
       
