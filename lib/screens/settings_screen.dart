@@ -438,7 +438,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
             : Theme.of(context).platform == TargetPlatform.iOS
                 ? 'iOS'
                 : 'Unknown',
-        deviceName: deviceName.isNotEmpty ? deviceName : null,
+        deviceName: deviceName != null && deviceName.isNotEmpty ? deviceName : null,
         studentId: Provider.of<AuthProvider>(context, listen: false).currentUser?.studentId,
         images: images,
       );
