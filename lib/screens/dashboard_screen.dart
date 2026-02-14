@@ -4,6 +4,7 @@ import 'package:provider/provider.dart';
 import 'splash_screen.dart';
 import 'settings_screen.dart';
 import 'profile_screen.dart';
+import 'student_quiz_list_screen.dart';
 import '../providers/auth_provider.dart';
 import '../providers/attendance_provider.dart';
 import '../providers/payment_provider.dart';
@@ -26,7 +27,7 @@ class _DashboardScreenState extends State<DashboardScreen> with SingleTickerProv
   @override
   void initState() {
     super.initState();
-    _tabController = TabController(length: 2, vsync: this);
+    _tabController = TabController(length: 3, vsync: this);
     WidgetsBinding.instance.addObserver(this);
     WidgetsBinding.instance.addPostFrameCallback((_) {
       _loadData();
@@ -281,6 +282,7 @@ class _DashboardScreenState extends State<DashboardScreen> with SingleTickerProv
             tabs: const [
               Tab(text: 'Attendance'),
               Tab(text: 'Payments'),
+              Tab(text: 'Quizzes'),
             ],
           ),
 
@@ -294,6 +296,13 @@ class _DashboardScreenState extends State<DashboardScreen> with SingleTickerProv
 
                 // Payments Tab
                 _buildPaymentsTab(paymentProvider),
+
+                // Quizzes Tab
+                Consumer<AuthProvider>(
+                  builder: (context, auth, _) => StudentQuizListScreen(
+                    studentId: auth.currentUser?.studentId ?? '',
+                  ),
+                ),
               ],
             ),
           ),

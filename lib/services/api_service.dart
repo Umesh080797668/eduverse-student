@@ -6,6 +6,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import '../models/attendance.dart';
 import '../models/payment.dart';
+import '../models/quiz.dart';
 
 class ApiException implements Exception {
   final String message;
@@ -382,5 +383,48 @@ class ApiService {
       if (e is ApiException) rethrow;
       throw ApiException('Failed to update profile: ${e.toString()}');
     }
+  }
+
+  // Quiz Methods
+  static Future<List<Quiz>> getAvailableQuizzes(String studentId) async {
+    final response = await _makeRequest(
+      'GET', 
+      '/api/student/quizzes', 
+      queryParams: {'studentId': studentId}
+    );
+    final data = json.decode(response.body);
+    if (data['success'] == true && data['quizzes'] != null) {
+      return (data['quizzes'] as List).map((json) => Quiz.fromJson(json)).toList();
+    }
+    return [];
+  }
+
+  static Future<QuizResult> submitQuiz(String studentId, String quizId, List<int> answers) async {
+    final response = await _makeRequest(
+      'POST',
+      '/api/student/quizzes/$quizId/submit',
+      body: {
+        'studentId': studentId,
+        'answers': answers,
+      },
+    );
+    final data = json.decode(response.body);
+    if (data['success'] == true) {
+      return QuizResult.fromJson(data['result']);
+    }
+    throw ApiException(data['error'] ?? 'Failed to submit quiz');
+  }
+
+  static Future<List<QuizResult>> getQuizHistory(String studentId) async {
+    final response = await _makeRequest(
+      'GET',
+      '/api/student/quizzes/history',
+      queryParams: {'studentId': studentId},
+    );
+    final data = json.decode(response.body);
+    if (data['success'] == true && data['results'] != null) {
+      return (data['results'] as List).map((json) => QuizResult.fromJson(json)).toList();
+    }
+    return [];
   }
 }
