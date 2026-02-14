@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import '../models/quiz.dart';
 import '../services/api_service.dart';
 import 'take_quiz_screen.dart';
+import 'quiz_result_detail_screen.dart';
 
 class StudentQuizListScreen extends StatefulWidget {
   final String studentId;
@@ -142,12 +143,25 @@ class _StudentQuizListScreenState extends State<StudentQuizListScreen> with Sing
             if (result.percentage != null) {
               scoreText = '${result.percentage!.toStringAsFixed(1)}%';
             } else {
-              scoreText = '${result.score}/${result.totalMarks}';
+              // Backward compatibility: calculate percentage from raw scores
+              double calcPercentage = 0.0;
+              if (result.totalMarks > 0) {
+                calcPercentage = (result.score / result.totalMarks) * 100;
+              }
+              scoreText = '${calcPercentage.toStringAsFixed(1)}%';
             }
             
             return ListTile(
               title: Text(result.quizTitle),
               subtitle: Text('Date: ${result.submittedAt.toString().substring(0, 10)}'),
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => QuizResultDetailScreen(result: result),
+                  ),
+                );
+              },
               trailing: Text(
                 scoreText,
                 style: TextStyle(

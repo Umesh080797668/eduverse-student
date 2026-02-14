@@ -66,6 +66,8 @@ class QuizResult {
   int totalMarks;
   double? percentage;
   DateTime submittedAt;
+  List<int> answers;
+  List<QuizQuestion>? questions;
 
   QuizResult({
     required this.id,
@@ -75,9 +77,18 @@ class QuizResult {
     required this.totalMarks,
     this.percentage,
     required this.submittedAt,
+    this.answers = const [],
+    this.questions,
   });
 
   factory QuizResult.fromJson(Map<String, dynamic> json) {
+    List<QuizQuestion>? parsedQuestions;
+    if (json['quizId'] is Map && json['quizId']['questions'] != null) {
+      parsedQuestions = (json['quizId']['questions'] as List)
+          .map((q) => QuizQuestion.fromJson(q))
+          .toList();
+    }
+
     return QuizResult(
       id: json['_id'],
       quizId: json['quizId'] is String ? json['quizId'] : (json['quizId']['_id'] ?? ''),
@@ -86,6 +97,8 @@ class QuizResult {
       totalMarks: json['totalMarks'],
       percentage: json['percentage'] != null ? (json['percentage'] as num).toDouble() : null,
       submittedAt: DateTime.parse(json['submittedAt']),
+      answers: json['answers'] != null ? List<int>.from(json['answers']) : [],
+      questions: parsedQuestions,
     );
   }
 }

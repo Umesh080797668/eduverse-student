@@ -1,0 +1,120 @@
+import 'package:flutter/material.dart';
+import '../models/quiz.dart';
+
+class QuizResultDetailScreen extends StatelessWidget {
+  final QuizResult result;
+
+  const QuizResultDetailScreen({Key? key, required this.result}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    // If the populate worked on backend, result.quizId should contain the quiz object
+    // But our current model might just store the title strings. 
+    // We need to ensure the QuizResult model parses the full quiz details.
+    
+    // Check if we have question details.
+    // Based on the server code: .populate('quizId', 'title description duration questions')
+    // The 'questions' array is included.
+    
+    // However, the QuizResult model used in the Flutter app needs to support this.
+    // Let's assume for now we will update the model to hold 'questions' from the populated quizId.
+    
+    final questions = result.questions ?? [];
+
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('Result Details'),
+      ),
+      body: questions.isEmpty
+          ? Center(child: Text('Questions details not available.'))
+          : ListView.builder(
+              padding: EdgeInsets.all(16),
+              itemCount: questions.length,
+              itemBuilder: (context, index) {
+                final question = questions[index];
+                final userAnswerIndex = result.answers.length > index ? result.answers[index] : -1;
+                final correctAnswerIndex = question.correctOptionIndex;
+                final isCorrect = userAnswerIndex == correctAnswerIndex;
+
+                return Card(
+                  margin: EdgeInsets.only(bottom: 16),
+                  elevation: 2,
+                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                  child: Padding(
+                    padding: EdgeInsets.all(16),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          'Q${index + 1}. ${question.text}',
+                          style: TextStyle(
+                            fontSize: 16,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                        SizedBox(height: 12),
+                        ...List.generate(question.options.length, (optIndex) {
+                          final optionText = question.options[optIndex];
+                          
+                          Color? tileColor;
+                          IconData? icon;
+                          
+                          if (optIndex == correctAnswerIndex) {
+                            tileColor = Colors.green.withOpacity(0.2);
+                            icon = Icons.check_circle;
+                          } else if (optIndex == userAnswerIndex && !isCorrect) {
+                            tileColor = Colors.red.withOpacity(0.2);
+                            icon = Icons.cancel;
+                          }
+
+                          // If the user didn't pick this, and it's not the correct one, standard display
+                          
+                          return Container(
+                            margin: EdgeInsets.symmetric(vertical: 4),
+                            decoration: BoxDecoration(
+                              color: tileColor,
+                              borderRadius: BorderRadius.circular(8),
+                              border: (optIndex == userAnswerIndex || optIndex == correctAnswerIndex)
+                                  ? Border.all(
+                                      color: optIndex == correctAnswerIndex ? Colors.green : Colors.red,
+                                      width: 1
+                                    )
+                                  : null
+                            ),
+                            child: ListTile(
+                              visualDensity: VisualDensity.compact,
+                              title: Text(
+                                optionText,
+                                style: TextStyle(
+                                  color: Theme.of(context).colorScheme.onSurface,
+                                  fontWeight: (optIndex == userAnswerIndex || optIndex == correctAnswerIndex) 
+                                      ? FontWeight.bold 
+                                      : FontWeight.normal
+                                ),
+                              ),
+                              trailing: icon != null 
+                                  ? Icon(
+                                      icon, 
+                                      color: optIndex == correctAnswerIndex ? Colors.green : Colors.red
+                                    ) 
+                                  : null,
+                            ),
+                          );
+                        }),
+                        if (userAnswerIndex == -1)
+                          Padding(
+                            padding: const EdgeInsets.only(top: 8.0),
+                            child: Text(
+                                "Not Answered",
+                                style: TextStyle(color: Colors.orange),
+                            ),
+                          ),
+                      ],
+                    ),
+                  ),
+                );
+              },
+            ),
+    );
+  }
+}
