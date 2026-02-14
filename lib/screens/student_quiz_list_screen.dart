@@ -138,12 +138,25 @@ class _StudentQuizListScreenState extends State<StudentQuizListScreen> with Sing
           itemCount: results.length,
           itemBuilder: (context, index) {
             final result = results[index];
+            String scoreText;
+            if (result.percentage != null) {
+              scoreText = '${result.percentage!.toStringAsFixed(1)}%';
+            } else {
+              scoreText = '${result.score}/${result.totalMarks}';
+            }
+            
             return ListTile(
               title: Text(result.quizTitle),
               subtitle: Text('Date: ${result.submittedAt.toString().substring(0, 10)}'),
               trailing: Text(
-                '${result.score}/${result.totalMarks}',
-                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.blue),
+                scoreText,
+                style: TextStyle(
+                  fontSize: 18, 
+                  fontWeight: FontWeight.bold, 
+                  color: Theme.of(context).brightness == Brightness.dark 
+                      ? Colors.lightBlueAccent 
+                      : Colors.blue,
+                ),
               ),
             );
           },
