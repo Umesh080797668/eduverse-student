@@ -237,7 +237,44 @@ class _TakeQuizScreenState extends State<TakeQuizScreen> {
                   return Padding(
                     padding: const EdgeInsets.symmetric(vertical: 20.0),
                     child: ElevatedButton(
-                      onPressed: _submitQuiz,
+                      onPressed: () {
+                         int answeredCount = 0;
+                         for (int i = 0; i < widget.quiz.questions.length; i++) {
+                             if (_selectedAnswers.containsKey(i)) answeredCount++;
+                         }
+
+                         if (answeredCount == 0) {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                                SnackBar(content: Text('Please answer at least one question before submitting.'))
+                            );
+                            return;
+                         }
+                         
+                         if (answeredCount < widget.quiz.questions.length) {
+                             showDialog(
+                                 context: context,
+                                 builder: (ctx) => AlertDialog(
+                                     title: Text('Unanswered Questions'),
+                                     content: Text('You have skipped ${widget.quiz.questions.length - answeredCount} questions. Are you sure you want to submit?'),
+                                     actions: [
+                                         TextButton(
+                                             child: Text('Cancel'),
+                                             onPressed: () => Navigator.pop(ctx),
+                                         ),
+                                         TextButton(
+                                             child: Text('Submit'),
+                                             onPressed: () {
+                                                 Navigator.pop(ctx);
+                                                 _submitQuiz();
+                                             },
+                                         )
+                                     ],
+                                 )
+                             );
+                         } else {
+                             _submitQuiz();
+                         }
+                      },
                       child: Text('Submit Quiz'),
                       style: ElevatedButton.styleFrom(
                         minimumSize: Size(double.infinity, 50),

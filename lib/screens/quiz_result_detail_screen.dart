@@ -50,6 +50,7 @@ class QuizResultDetailScreen extends StatelessWidget {
                           style: TextStyle(
                             fontSize: 16,
                             fontWeight: FontWeight.bold,
+                            color: Theme.of(context).colorScheme.onSurface,
                           ),
                         ),
                         SizedBox(height: 12),
@@ -109,6 +110,52 @@ class QuizResultDetailScreen extends StatelessWidget {
                                 style: TextStyle(color: Colors.orange),
                             ),
                           ),
+                        SizedBox(height: 12),
+                        Container(
+                          padding: EdgeInsets.all(12),
+                          decoration: BoxDecoration(
+                            color: Theme.of(context).brightness == Brightness.dark 
+                                ? Colors.grey[800] 
+                                : Colors.blue[50], 
+                            borderRadius: BorderRadius.circular(8),
+                            border: Border.all(
+                                color: Theme.of(context).brightness == Brightness.dark 
+                                    ? Colors.grey[700]! 
+                                    : Colors.blue[100]!
+                            ),
+                          ),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Row(
+                                children: [
+                                  Icon(Icons.auto_awesome, size: 16, color: Colors.blue),
+                                  SizedBox(width: 8),
+                                  Text(
+                                    "AI Explanation",
+                                    style: TextStyle(
+                                      fontWeight: FontWeight.bold,
+                                      color: Colors.blue,
+                                      fontSize: 14,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                              SizedBox(height: 6),
+                              Text(
+                                // Placeholder AI explanation logic - in a real app this would come from backend
+                                isCorrect 
+                                    ? "Great job! You identified the correct answer. This demonstrates a good understanding of the concept." 
+                                    : "The correct answer is '${question.options[correctAnswerIndex]}'. Review this topic to understand why other options were incorrect.",
+                                style: TextStyle(
+                                  fontSize: 13,
+                                  fontStyle: FontStyle.italic,
+                                  color: Theme.of(context).colorScheme.onSurface.withOpacity(0.8),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
                       ],
                     ),
                   ),
