@@ -5,8 +5,8 @@ import 'package:flutter_dotenv/flutter_dotenv.dart';
 class GeminiService {
   // Use dotenv to retrieve the API key
   static String get _apiKey => dotenv.env['GEMINI_API_KEY'] ?? ''; 
-  // Switched to gemini-1.5-flash as it's faster and widely available
-  static const String _baseUrl = 'https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent';
+  // Reverting to gemini-pro as 1.5-flash returned 404 for this API version/key combination
+  static const String _baseUrl = 'https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateContent';
 
   static Future<String> getExplanation({
     required String question,
