@@ -47,3 +47,5 @@ app.*.map.json
 # Firebase secrets
 android/app/google-services.json
 android/app/src/main/res/values/values.xml
+.env.local
+.env.local

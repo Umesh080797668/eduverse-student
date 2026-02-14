@@ -240,7 +240,7 @@ class _TakeQuizScreenState extends State<TakeQuizScreen> {
                       onPressed: () {
                          int answeredCount = 0;
                          for (int i = 0; i < widget.quiz.questions.length; i++) {
-                             if (_selectedAnswers.containsKey(i)) answeredCount++;
+                             if (_answers[i] != -1) answeredCount++;
                          }
 
                          if (answeredCount == 0) {

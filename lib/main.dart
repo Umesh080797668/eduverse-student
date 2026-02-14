@@ -13,7 +13,12 @@ import 'services/notification_service.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await dotenv.load(fileName: ".env");
+  try {
+    await dotenv.load(fileName: ".env.local");
+  } catch (e) {
+    // Fallback to .env if .env.local doesn't exist
+    await dotenv.load(fileName: ".env");
+  }
 
   // Initialize Firebase
   await Firebase.initializeApp();
