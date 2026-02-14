@@ -157,7 +157,7 @@ class _TakeQuizScreenState extends State<TakeQuizScreen> {
           content: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              Text('Your Score:', style: TextStyle(fontSize: 16)),
+              Text('Your Score:', style: TextStyle(fontSize: 16, color: Theme.of(context).colorScheme.onSurface)),
               SizedBox(height: 10),
               Text(
                 '${result.score} / ${result.totalMarks}',
@@ -167,7 +167,7 @@ class _TakeQuizScreenState extends State<TakeQuizScreen> {
                  SizedBox(height: 5),
                  Text(
                     '${result.percentage!.toStringAsFixed(1)}%',
-                    style: TextStyle(fontSize: 20, color: Colors.grey),
+                    style: TextStyle(fontSize: 20, color: Theme.of(context).colorScheme.onSurfaceVariant),
                  ),
               ]
             ],
@@ -260,14 +260,14 @@ class _TakeQuizScreenState extends State<TakeQuizScreen> {
                       children: [
                         Text(
                           'Q${index + 1}. ${question.text}',
-                          style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
+                          style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600, color: Theme.of(context).colorScheme.onSurface),
                         ),
                         SizedBox(height: 10),
                         ...question.options.asMap().entries.map((entry) {
                           int idx = entry.key;
                           String option = entry.value;
                           return RadioListTile<int>(
-                            title: Text(option),
+                            title: Text(option, style: TextStyle(color: Theme.of(context).colorScheme.onSurface)),
                             value: idx,
                             groupValue: _answers[index],
                             activeColor: Theme.of(context).primaryColor,
