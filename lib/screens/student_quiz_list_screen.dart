@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import '../models/quiz.dart';
 import '../services/api_service.dart';
+import '../widgets/progress_chart.dart';
 import 'take_quiz_screen.dart';
 import 'quiz_result_detail_screen.dart';
 
@@ -83,7 +84,9 @@ class _StudentQuizListScreenState extends State<StudentQuizListScreen> with Sing
                       Text(
                           'Attempts: ${quiz.attemptsTaken}/${quiz.maxAttempts}',
                           style: TextStyle(
-                              color: quiz.attemptsTaken >= quiz.maxAttempts ? Colors.red : Colors.green[700],
+                              color: quiz.attemptsTaken >= quiz.maxAttempts 
+                                  ? (Theme.of(context).brightness == Brightness.dark ? Colors.redAccent : Colors.red)
+                                  : (Theme.of(context).brightness == Brightness.dark ? Colors.lightGreenAccent : Colors.green[700]),
                               fontSize: 12,
                           ),
                       ),
@@ -133,47 +136,51 @@ class _StudentQuizListScreenState extends State<StudentQuizListScreen> with Sing
         }
         final results = snapshot.data ?? [];
         if (results.isEmpty) {
-          return Center(child: Text('No history'));
+          return const Center(child: Text('No history'));
         }
-        return ListView.builder(
-          itemCount: results.length,
-          itemBuilder: (context, index) {
-            final result = results[index];
-            String scoreText;
-            if (result.percentage != null) {
-              scoreText = '${result.percentage!.toStringAsFixed(1)}%';
-            } else {
-              // Backward compatibility: calculate percentage from raw scores
-              double calcPercentage = 0.0;
-              if (result.totalMarks > 0) {
-                calcPercentage = (result.score / result.totalMarks) * 100;
-              }
-              scoreText = '${calcPercentage.toStringAsFixed(1)}%';
-            }
-            
-            return ListTile(
-              title: Text(result.quizTitle),
-              subtitle: Text('Date: ${result.submittedAt.toString().substring(0, 10)}'),
-              onTap: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => QuizResultDetailScreen(result: result),
-                  ),
-                );
-              },
-              trailing: Text(
-                scoreText,
-                style: TextStyle(
-                  fontSize: 18, 
-                  fontWeight: FontWeight.bold, 
-                  color: Theme.of(context).brightness == Brightness.dark 
-                      ? Colors.lightBlueAccent 
-                      : Colors.blue,
-                ),
+        
+        return Column(
+          children: [
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+              child: ProgressChart(results: results), // Show progress chart
+            ),
+            const Divider(),
+            Expanded(
+              child: ListView.builder(
+                itemCount: results.length,
+                itemBuilder: (context, index) {
+                  final result = results[index];
+                  double percentage = result.percentage ?? 
+                      ((result.totalMarks > 0) ? (result.score / result.totalMarks * 100) : 0.0);
+                  
+                  return Card(
+                    margin: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                    child: ListTile(
+                      title: Text(result.quizTitle),
+                      subtitle: Text('Date: ${result.submittedAt.toString().substring(0, 10)}'),
+                      trailing: Text(
+                        '${percentage.toStringAsFixed(1)}%',
+                        style: TextStyle(
+                          fontSize: 18, 
+                          fontWeight: FontWeight.bold, 
+                          color: percentage >= 75 ? Colors.green : (percentage >= 50 ? Colors.orange : Colors.red),
+                        ),
+                      ),
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => QuizResultDetailScreen(result: result),
+                          ),
+                        );
+                      },
+                    ),
+                  );
+                },
               ),
-            );
-          },
+            ),
+          ],
         );
       },
     );

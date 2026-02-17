@@ -427,4 +427,31 @@ class ApiService {
     }
     return [];
   }
+
+  // Feature: Notices
+  static Future<List<Map<String, dynamic>>> getNotices(String classId) async {
+    final response = await _makeRequest('GET', '/api/notices', queryParams: {'classId': classId});
+    if (response.statusCode == 200) {
+      return List<Map<String, dynamic>>.from(json.decode(response.body));
+    }
+    return [];
+  }
+
+  // Feature: Resources
+  static Future<List<Map<String, dynamic>>> getResources(String classId) async {
+    final response = await _makeRequest('GET', '/api/resources', queryParams: {'classId': classId});
+    if (response.statusCode == 200) {
+      return List<Map<String, dynamic>>.from(json.decode(response.body));
+    }
+    return [];
+  }
+
+  // Feature: Leaderboard
+  static Future<List<Map<String, dynamic>>> getLeaderboard(String quizId) async {
+    final response = await _makeRequest('GET', '/api/analytics/quiz-leaderboard/$quizId');
+    if (response.statusCode == 200) {
+      return List<Map<String, dynamic>>.from(json.decode(response.body));
+    }
+    return [];
+  }
 }

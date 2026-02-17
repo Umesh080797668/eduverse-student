@@ -153,7 +153,10 @@ class _TakeQuizScreenState extends State<TakeQuizScreen> {
         context: context,
         barrierDismissible: false,
         builder: (context) => AlertDialog(
-          title: Text('Quiz Completed'),
+          title: Text(
+            'Quiz Completed',
+            style: TextStyle(color: Theme.of(context).colorScheme.onSurface),
+          ),
           content: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
@@ -161,7 +164,13 @@ class _TakeQuizScreenState extends State<TakeQuizScreen> {
               SizedBox(height: 10),
               Text(
                 '${result.score} / ${result.totalMarks}',
-                style: TextStyle(fontSize: 32, fontWeight: FontWeight.bold, color: Colors.green),
+                style: TextStyle(
+                  fontSize: 32, 
+                  fontWeight: FontWeight.bold, 
+                  color: Theme.of(context).brightness == Brightness.dark 
+                      ? Colors.lightGreenAccent 
+                      : Colors.green
+                ),
               ),
               if (result.percentage != null) ...[
                  SizedBox(height: 5),
@@ -220,7 +229,9 @@ class _TakeQuizScreenState extends State<TakeQuizScreen> {
                 style: TextStyle(
                   fontSize: 20, 
                   fontWeight: FontWeight.bold,
-                  color: _secondsRemaining < 60 ? Colors.red : null, // Warn if < 1 min
+                  color: _secondsRemaining < 60 
+                      ? (Theme.of(context).brightness == Brightness.dark ? Colors.redAccent : Colors.red)
+                      : null, // Warn if < 1 min
                 ),
               ),
             ),
