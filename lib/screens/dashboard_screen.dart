@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
+import 'login_screen.dart';
 import 'splash_screen.dart';
 import 'settings_screen.dart';
 import 'profile_screen.dart';
@@ -50,7 +51,9 @@ class _DashboardScreenState extends State<DashboardScreen> with SingleTickerProv
           onUserNotFound: () async {
             await authProvider.logout();
             if (mounted) {
-              Navigator.of(context).pushReplacementNamed('/login');
+              Navigator.of(context).pushReplacement(
+                MaterialPageRoute(builder: (_) => const LoginScreen()),
+              );
             }
           },
         );
