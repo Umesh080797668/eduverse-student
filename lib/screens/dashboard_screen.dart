@@ -12,6 +12,8 @@ import '../providers/payment_provider.dart';
 import '../providers/admin_changes_provider.dart';
 import '../models/attendance.dart';
 import '../models/payment.dart';
+import '../services/api_service.dart';
+import 'package:intl/intl.dart';
 
 class DashboardScreen extends StatefulWidget {
   const DashboardScreen({super.key});
@@ -24,6 +26,8 @@ class _DashboardScreenState extends State<DashboardScreen> with SingleTickerProv
   late TabController _tabController;
   int _selectedYear = DateTime.now().year;
   final Map<String, Set<int>> _expandedMonths = {}; // className -> set of expanded months
+  List<Map<String, dynamic>> _recentNotices = [];
+  bool _loadingNotices = false;
 
   @override
   void initState() {
@@ -32,6 +36,7 @@ class _DashboardScreenState extends State<DashboardScreen> with SingleTickerProv
     WidgetsBinding.instance.addObserver(this);
     WidgetsBinding.instance.addPostFrameCallback((_) {
       _loadData();
+      _loadRecentNotices();
       
       // Start admin changes polling (covers restrictions and other admin actions)
       final authProvider = Provider.of<AuthProvider>(context, listen: false);
@@ -125,6 +130,64 @@ class _DashboardScreenState extends State<DashboardScreen> with SingleTickerProv
             ),
           );
         }
+      }
+    }
+  }
+
+  Future<void> _loadRecentNotices() async {
+    final user = Provider.of<AuthProvider>(context, listen: false).currentUser;
+    if (user == null || user.studentData == null) {
+      return;
+    }
+
+    setState(() => _loadingNotices = true);
+
+    try {
+      final List<Map<String, dynamic>> allNotices = [];
+      
+      // Get notices from primary classId
+      final classId = user.studentData!['classId']?.toString();
+      if (classId != null && classId.isNotEmpty) {
+        try {
+          final notices = await ApiService.getNotices(classId);
+          allNotices.addAll(notices);
+        } catch (e) {
+          debugPrint('Error loading notices for primary class: $e');
+        }
+      }
+
+      // Get notices from additional classIds if available
+      if (user.studentData!['classIds'] != null && user.studentData!['classIds'] is List) {
+        final classIds = (user.studentData!['classIds'] as List).map((e) => e.toString()).toList();
+        for (final id in classIds) {
+          if (id != classId) { // Avoid duplicate call if classId appears in classIds
+            try {
+              final notices = await ApiService.getNotices(id);
+              allNotices.addAll(notices);
+            } catch (e) {
+              debugPrint('Error loading notices for class $id: $e');
+            }
+          }
+        }
+      }
+
+      // Sort by date (newest first) and take top 3
+      allNotices.sort((a, b) {
+        final dateA = DateTime.tryParse(a['createdAt'] ?? '') ?? DateTime.now();
+        final dateB = DateTime.tryParse(b['createdAt'] ?? '') ?? DateTime.now();
+        return dateB.compareTo(dateA);
+      });
+
+      if (mounted) {
+        setState(() {
+          _recentNotices = allNotices.take(3).toList();
+          _loadingNotices = false;
+        });
+      }
+    } catch (e) {
+      debugPrint('Error loading recent notices: $e');
+      if (mounted) {
+        setState(() => _loadingNotices = false);
       }
     }
   }
@@ -243,6 +306,96 @@ class _DashboardScreenState extends State<DashboardScreen> with SingleTickerProv
               textAlign: TextAlign.center,
             ),
           ),
+
+          // Recent Notices Section
+          if (_loadingNotices || _recentNotices.isNotEmpty)
+            ExpansionTile(
+              initiallyExpanded: true,
+              title: const Text(
+                  'Recent Notices',
+                  style: TextStyle(
+                    fontSize: 18,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              children: [
+                Container(
+                  margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                  decoration: BoxDecoration(
+                    color: Theme.of(context).cardColor,
+                    borderRadius: BorderRadius.circular(12),
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.black.withOpacity(0.05),
+                        blurRadius: 4,
+                        offset: const Offset(0, 2),
+                      ),
+                    ],
+                  ),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.all(12),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            const SizedBox.shrink(), // Spacer
+                            TextButton(
+                              onPressed: () {
+                                 Navigator.push(context, MaterialPageRoute(builder: (_) => const ClassHubScreen()));
+                              },
+                              child: const Text('View All'),
+                            ),
+                          ],
+                        ),
+                      ),
+                      if (_loadingNotices)
+                        const Padding(
+                          padding: EdgeInsets.all(16.0),
+                          child: Center(child: CircularProgressIndicator()),
+                        )
+                      else if (_recentNotices.isNotEmpty)
+                        ListView.separated(
+                          shrinkWrap: true,
+                          physics: const NeverScrollableScrollPhysics(),
+                          itemCount: _recentNotices.length,
+                          separatorBuilder: (context, index) => const Divider(height: 1),
+                          itemBuilder: (context, index) {
+                            final notice = _recentNotices[index];
+                            final date = DateTime.tryParse(notice['createdAt'] ?? '') ?? DateTime.now();
+                            return ListTile(
+                              leading: Icon(
+                                notice['priority'] == 'high' ? Icons.assignment_late : Icons.assignment,
+                                color: notice['priority'] == 'high' ? Colors.red : Colors.blue,
+                              ),
+                              title: Text(
+                                notice['title'] ?? 'Notice',
+                                maxLines: 1,
+                                overflow: TextOverflow.ellipsis,
+                                style: const TextStyle(fontWeight: FontWeight.w600),
+                              ),
+                              subtitle: Text(
+                                notice['content'] ?? '',
+                                maxLines: 2,
+                                overflow: TextOverflow.ellipsis,
+                              ),
+                              trailing: Text(
+                                DateFormat('MMM d').format(date),
+                                style: TextStyle(fontSize: 12, color: Colors.grey[600]),
+                              ),
+                              onTap: () {
+                                // Navigate to ClassHub to see full details or show dialog
+                                 Navigator.push(context, MaterialPageRoute(builder: (_) => const ClassHubScreen()));
+                              },
+                            );
+                          },
+                        )
+                    ],
+                  ),
+                ),
+              ],
+            ),
 
           // Year selector
           Padding(
