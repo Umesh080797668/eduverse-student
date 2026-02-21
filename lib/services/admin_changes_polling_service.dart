@@ -90,16 +90,17 @@ class AdminChangesPollingService {
 
     try {
       final token = await ApiService.getToken();
-      if (token == null) return;
 
-      // First check if user still exists
+      // First check if user still exists. For students we allow unauthenticated
+      // status checks (the backend provides a public status endpoint). For
+      // teachers the API requires an auth token.
       final userExists = await _checkUserExists(token);
       if (!userExists) {
         _onUserNotFound?.call();
         return;
       }
 
-      final currentState = await _fetchCurrentState(token);
+      final currentState = await _fetchCurrentState(token!);
       _processStateChanges(currentState);
       _lastKnownState = currentState;
     } catch (e) {
@@ -108,21 +109,31 @@ class AdminChangesPollingService {
   }
 
   /// Check if user still exists
-  Future<bool> _checkUserExists(String token) async {
+  Future<bool> _checkUserExists(String? token) async {
     try {
       if (_userType == 'student') {
-        final response = await http.get(
-          Uri.parse('$baseUrl/api/students/$_userId'),
-          headers: {
-            'Content-Type': 'application/json',
-            'Authorization': 'Bearer $token',
-          },
-        ).timeout(const Duration(seconds: 10));
+        // Prefer unauthenticated status endpoint when token is not present
+        try {
+          final status = await ApiService.checkStudentStatus(_userId!);
+          // If the API indicates success, the student exists
+          if (status['success'] == true) return true;
+          return false;
+        } catch (e) {
+          // Fallback to token-based check if token is available
+          if (token == null) {
+            print('AdminChangesPollingService: Student status check failed and no token available: $e');
+            return false;
+          }
+        }
+      }
 
-        return response.statusCode == 200;
-      } else if (_userType == 'teacher') {
+      // For teacher or when token is available, call protected endpoints
+      if (_userType == 'student' || _userType == 'teacher') {
+        if (token == null) return false;
+
+        final path = _userType == 'student' ? 'students' : 'teachers';
         final response = await http.get(
-          Uri.parse('$baseUrl/api/teachers/$_userId'),
+          Uri.parse('$baseUrl/api/$path/$_userId'),
           headers: {
             'Content-Type': 'application/json',
             'Authorization': 'Bearer $token',
@@ -131,6 +142,7 @@ class AdminChangesPollingService {
 
         return response.statusCode == 200;
       }
+
       return true; // For other types, assume exists
     } catch (e) {
       print('AdminChangesPollingService: Error checking user existence: $e');
