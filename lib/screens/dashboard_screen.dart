@@ -7,6 +7,7 @@ import 'settings_screen.dart';
 import 'profile_screen.dart';
 import 'student_quiz_list_screen.dart';
 import 'class_hub_screen.dart';
+import 'lms_dashboard_screen.dart';
 import '../providers/auth_provider.dart';
 import '../providers/attendance_provider.dart';
 import '../providers/payment_provider.dart';
@@ -249,6 +250,11 @@ class _DashboardScreenState extends State<DashboardScreen> with SingleTickerProv
           style: GoogleFonts.poppins(fontWeight: FontWeight.bold),
         ),
         actions: [
+          IconButton(
+            icon: const Icon(Icons.school),
+            tooltip: 'LMS & Materials',
+            onPressed: () => Navigator.push(context, MaterialPageRoute(builder: (_) => const LmsDashboardScreen())),
+          ),
           IconButton(
             icon: const Icon(Icons.class_),
             tooltip: 'Class Hub',
